@@ -9,9 +9,7 @@ const Navbar = () => {
             <div className="container mx-auto flex justify-between items-center ">
                 <Link to="/" className="text-xl font-bold ml-18">Task Manager</Link>
 
-                <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-                    ☰
-                </button>
+
                 <ul className={`md:flex space-x-4 ${isOpen ? 'block' : 'hidden'} md:block`}>
                     <li><Link to="/" className="hover:text-gray-400 mr-40 font-medium">Projects</Link></li>
                 </ul>
