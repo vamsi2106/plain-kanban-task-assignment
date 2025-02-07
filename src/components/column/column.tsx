@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const Column: React.FC<Props> = (props) => {
-  const { columnId, name, content, onDelete } = props;
+  const { columnId, content, onDelete } = props;
 
 
   return (
