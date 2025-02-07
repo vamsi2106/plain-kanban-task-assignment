@@ -12,33 +12,14 @@ import { useParams } from "react-router-dom";
 
 
 const initialColumns = [
-  { id: 1, name: "Backlog", color: "bg-indigo-50 hover:bg-indigo-100", textColor: "text-indigo-600", dotColor: "bg-indigo-600" },
+  { id: 1, name: "Backlog", color: "bg-indigo-50 hover:bg-indigo-100", textColor: "text-indigo-600", dotColor: "bg-indigo-600", },
   { id: 2, name: "To-Do", color: "bg-blue-50 hover:bg-blue-100", textColor: "text-blue-600", dotColor: "bg-blue-600" },
   { id: 3, name: "In-Progress", color: "bg-yellow-50 hover:bg-yellow-100", textColor: "text-yellow-600", dotColor: "bg-yellow-600" },
   { id: 4, name: "Done", color: "bg-green-50 hover:bg-green-100", textColor: "text-green-600", dotColor: "bg-green-600" },
   { id: 5, name: "Cancelled", color: "bg-red-50 hover:bg-red-100", textColor: "text-red-600", dotColor: "bg-red-600" },
 ];
 
-const mockTasks = [
-  {
-    id: 1,
-    title: "Task 1",
-    description: "Description for Task 1",
-    status: "Backlog",
-    priority: "Medium",
-    assignedUser: "User1",
-    projectId: "proj-1"
-  },
-  {
-    id: 2,
-    title: "Task 2",
-    description: "Description for Task 2",
-    status: "To-Do",
-    priority: "High",
-    assignedUser: "User2",
-    projectId: "proj-2"
-  },
-];
+
 
 // Toast notification component
 const Toast = ({ message, type, onClose }) => (
@@ -62,7 +43,7 @@ export const KanbanContainer: React.FC = () => {
   // Load columns from localStorage or use initial
   const [columns, setColumns] = useState(() => {
     const savedColumns = localStorage.getItem('kanbanColumns');
-    return savedColumns ? JSON.parse(savedColumns) : initialColumns.map(col => ({ ...col, content: mockTasks }));
+    return savedColumns ? JSON.parse(savedColumns) : initialColumns.map(col => ({ ...col, content: [] }));
   });
 
   const [newTask, setNewTask] = useState({
@@ -106,21 +87,30 @@ export const KanbanContainer: React.FC = () => {
 
   const moveCard = (card: CardContent, destination: { columnId: number, cardId: number | null }, prevColumns: typeof columns) => {
     return prevColumns.map(column => {
-      if (column.id === destination.columnId) {
-        return {
-          ...column,
-          content: [
-            ...column.content,
-            { ...card, status: initialColumns.find(col => col.id === destination.columnId)?.name || "Unknown" }, // Update status
-          ],
-        };
+
+      if (column.content.some(c => c.id === card.id) && column.id === destination.columnId) {
+        return column;
       }
+
+
       if (column.content.some(c => c.id === card.id)) {
         return {
           ...column,
           content: column.content.filter(c => c.id !== card.id),
         };
       }
+
+
+      if (column.id === destination.columnId) {
+        return {
+          ...column,
+          content: [
+            ...column.content,
+            { ...card, status: initialColumns.find(col => col.id === destination.columnId)?.name || "Unknown" },
+          ],
+        };
+      }
+
       return column;
     });
   };
@@ -267,7 +257,7 @@ export const KanbanContainer: React.FC = () => {
 
         {isKanbanView ? (
           // Kanban View
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
             {columns.map((column) => (
               <div
                 key={column.id}
