@@ -1,0 +1,12 @@
+.containersss {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  align-items: center;
+  width: 250px; 
+  height: 70vh; 
+  overflow: hidden; 
+  color: black;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
